@@ -8,7 +8,7 @@ export function extractMatchFromSelection(
 }
 
 export function tranformSelectionToCSS(match: RegExpMatchArray): string[] {
-  return match
+  const cssClasses = match
     .map(
       (el) =>
         `${el
@@ -25,4 +25,49 @@ export function tranformSelectionToCSS(match: RegExpMatchArray): string[] {
       }
       return result;
     }, []);
+
+  const dynamicClass = findDynamicClassesIndex(cssClasses);
+  if (dynamicClass) {
+    cssClasses.map((item, index) => {
+      if (dynamicClass.includes(index)) {
+        cssClasses[index] = transformDynamicClass(item) ?? cssClasses[index];
+      }
+    });
+  }
+  return cssClasses;
+}
+
+export function findDynamicClassesIndex(cssClasses: string[]): number[] {
+  const dynamicClassIndex: number[] = [];
+
+  cssClasses.forEach((item, index) => {
+    const dynamicClass = findDynamicClass(item);
+
+    if (dynamicClass) {
+      dynamicClassIndex.push(index);
+    }
+  });
+
+  return dynamicClassIndex;
+}
+
+export function findDynamicClass(item: string): string | undefined {
+  const dynamicClassPattern = /(\[\[?|'{?|{\s*)/;
+  return item.match(dynamicClassPattern)?.input;
+}
+
+export function transformDynamicClass(cssClass: string): string | undefined {
+  const pattern = /\w+(?=:)/g;
+  const dynamicClass = cssClass.match(pattern);
+  if (dynamicClass) {
+    return dynamicClass
+      .map((match, index) => {
+        if (index === dynamicClass.length - 1) {
+          return `&.class-${match}{}}`;
+        } else {
+          return `&.class-${match}{}`;
+        }
+      })
+      .join("");
+  }
 }

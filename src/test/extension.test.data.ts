@@ -27,11 +27,18 @@ export const CASE1_CSS = [
 // CASE 2
 export const CASE2_HTML = `
   <div class="class-1" :class="{class-2: condition, class-3:condition}" />
- 
 `;
 export const CASE2_MATCHED: RegExpMatchArray = [
   'class="class-1"',
   'class="{class-2: condition, class-3:condition}"',
   "/>",
 ];
-export const CASE2_CSS = [".class-1{", "&.class-2{}", "&.class-3{}}"];
+export const CASE2_CLASSES = [
+  'class="class-1"',
+  'class="{class-2: condition, class-3:condition}"',
+  "/>",
+];
+export const CASE2_DYNAMIC_CLASS =
+  'class="{class-2: condition, class-3:condition}"';
+export const CASE2_DYNAMIC_CLASS_ADAPTED = "&.class-2{}&.class-3{}}";
+export const CASE2_CSS = [".class-1{", "&.class-2{}&.class-3{}}"];
