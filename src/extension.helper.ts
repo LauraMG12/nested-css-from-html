@@ -34,6 +34,11 @@ export function tranformSelectionToCSS(match: RegExpMatchArray): string[] {
       }
     });
   }
+
+  cssClasses.map(
+    (item, index) => (cssClasses[index] = transformMultipleClasses(item))
+  );
+
   return cssClasses;
 }
 
@@ -70,4 +75,23 @@ export function transformDynamicClass(cssClass: string): string | undefined {
       })
       .join("");
   }
+}
+
+export function transformMultipleClasses(item: string): string {
+  return item
+    .split(" ")
+    .map((cssClass, index, array) => {
+      if (array.length === 1) {
+        return cssClass;
+      }
+      if (index === 0) {
+        return cssClass + "{}";
+      }
+      if (index === array.length - 1) {
+        return "." + cssClass;
+      } else {
+        return "." + cssClass + "{}";
+      }
+    })
+    .join(" ");
 }
